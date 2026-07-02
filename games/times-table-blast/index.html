@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Times Table Blast - EduPlay</title>
+<link rel="stylesheet" href="../../css/global.css">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header class="site-header">
+  <a href="../../index.html" class="logo">EduPlay</a>
+  <nav class="site-nav">
+    <a href="../../index.html">Home</a>
+    <a href="../../about.html">About</a>
+    <a href="../../privacy.html">Privacy</a>
+  </nav>
+</header>
+
+<div class="page">
+
+  <div class="ad-rail">
+    <!--
+      Google AdSense slot (left). Replace ca-pub-XXXXXXXXXXXXXXXX and
+      data-ad-slot with your own values, then uncomment.
+
+      <ins class="adsbygoogle" style="display:block"
+           data-ad-client="ca-pub-XXXXXXXXXXXXXXXX"
+           data-ad-slot="XXXXXXXXXX"
+           data-ad-format="vertical"
+           data-full-width-responsive="true"></ins>
+      <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+    -->
+    <div class="ad-slot">Ad space<br>160 x 600</div>
+  </div>
+
+  <div class="stage">
+
+    <h1 class="title">TIMES TABLE BLAST</h1>
+    <div class="subtitle">Pick the right answer before the bar runs out!</div>
+
+    <!-- ===================== SCOREBOARD ===================== -->
+    <div class="scoreboard">
+      <div class="score-box correct">
+        <div class="score-label">Correct</div>
+        <div class="score-value" id="correctCount">0</div>
+      </div>
+      <div class="score-box streak">
+        <div class="score-label">Streak</div>
+        <div class="score-value" id="streakCount">0</div>
+      </div>
+      <div class="score-box incorrect">
+        <div class="score-label">Wrong</div>
+        <div class="score-value" id="incorrectCount">0</div>
+      </div>
+    </div>
+
+    <!-- ===================== GAME CARD ===================== -->
+    <div class="game-card">
+
+      <!-- Start screen shown before the game begins -->
+      <div class="start-screen" id="startScreen">
+        <div class="big-emoji">7 &times; 8 = ?</div>
+        <p>Race the clock and pick the correct answer to grow your streak.</p>
+        <button class="play-btn" id="playBtn">PLAY</button>
+      </div>
+
+      <!-- Play area, hidden until PLAY is pressed -->
+      <div class="play-area" id="playArea">
+        <div class="timer-wrap">
+          <div class="timer-bar" id="timerBar"></div>
+        </div>
+
+        <div class="question" id="questionText">? &times; ?</div>
+
+        <div class="answers" id="answersGrid"></div>
+
+        <div class="feedback" id="feedbackText"></div>
+      </div>
+
+    </div>
+
+    <!-- ===================== SETTINGS ===================== -->
+    <div class="settings">
+      <label>
+        Table
+        <select id="tableSelect">
+          <option value="0">Mixed 1-12</option>
+          <option value="2">2s</option>
+          <option value="3">3s</option>
+          <option value="4">4s</option>
+          <option value="5">5s</option>
+          <option value="6">6s</option>
+          <option value="7">7s</option>
+          <option value="8">8s</option>
+          <option value="9">9s</option>
+          <option value="10">10s</option>
+          <option value="11">11s</option>
+          <option value="12">12s</option>
+        </select>
+      </label>
+      <label>
+        Speed
+        <select id="speedSelect">
+          <option value="12">Relaxed</option>
+          <option value="8" selected>Normal</option>
+          <option value="5">Fast</option>
+        </select>
+      </label>
+      <button class="reset-btn" id="resetBtn">End game</button>
+    </div>
+
+    <!-- Ad slot for narrow screens, shown below the game instead of side rails -->
+    <div class="ad-slot-mobile">Ad space</div>
+
+  </div>
+
+  <div class="ad-rail">
+    <!--
+      Google AdSense slot (right). Same setup as the left rail above.
+
+      <ins class="adsbygoogle" style="display:block"
+           data-ad-client="ca-pub-XXXXXXXXXXXXXXXX"
+           data-ad-slot="XXXXXXXXXX"
+           data-ad-format="vertical"
+           data-full-width-responsive="true"></ins>
+      <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+    -->
+    <div class="ad-slot">Ad space<br>160 x 600</div>
+  </div>
+
+</div>
+
+<footer class="site-footer">
+  <p>EduPlay is free to use. <a href="../../about.html">About</a> · <a href="../../privacy.html">Privacy policy</a></p>
+</footer>
+
+<script src="script.js"></script>
+</body>
+</html>

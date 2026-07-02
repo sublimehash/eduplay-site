@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>EduPlay - free educational games</title>
+<link rel="stylesheet" href="css/global.css">
+<style>
+  .hero{
+    text-align: center;
+    margin: 10px 0 30px;
+  }
+
+  .hero h1{
+    font-family: 'Baloo 2', cursive;
+    font-weight: 800;
+    font-size: clamp(2.2rem, 7vw, 3.4rem);
+    color: var(--yellow);
+    text-shadow: 3px 3px 0 var(--pink), 6px 6px 0 rgba(0,0,0,0.35);
+    margin: 0 0 8px;
+  }
+
+  .hero p{
+    font-weight: 700;
+    color: var(--cyan);
+    font-size: clamp(0.95rem, 2.5vw, 1.15rem);
+    margin: 0;
+  }
+
+  .game-grid{
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 18px;
+    width: 100%;
+    max-width: 560px;
+  }
+
+  .game-card{
+    background: var(--bg-panel);
+    border: 4px solid var(--purple);
+    border-radius: 20px;
+    padding: 22px 18px;
+    text-align: center;
+    text-decoration: none;
+    display: block;
+    box-shadow: 0 6px 0 rgba(0,0,0,0.3);
+    transition: transform 0.08s ease;
+  }
+
+  .game-card:hover{
+    transform: translateY(-3px);
+  }
+
+  .game-card .emoji{
+    font-size: 2.4rem;
+    display: block;
+    margin-bottom: 8px;
+  }
+
+  .game-card .name{
+    font-family: 'Baloo 2', cursive;
+    font-weight: 800;
+    font-size: 1.2rem;
+    color: var(--white);
+    display: block;
+    margin-bottom: 4px;
+  }
+
+  .game-card .desc{
+    font-size: 0.85rem;
+    color: rgba(255,255,255,0.7);
+    display: block;
+  }
+
+  .game-card.soon{
+    border-color: rgba(255,255,255,0.15);
+    opacity: 0.55;
+    cursor: default;
+  }
+
+  .game-card.soon:hover{
+    transform: none;
+  }
+
+  .badge-soon{
+    display: inline-block;
+    margin-top: 8px;
+    font-size: 0.7rem;
+    font-weight: 800;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    background: rgba(255,255,255,0.1);
+    color: rgba(255,255,255,0.6);
+    padding: 3px 10px;
+    border-radius: 10px;
+  }
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <a href="index.html" class="logo">EduPlay</a>
+  <nav class="site-nav">
+    <a href="index.html">Home</a>
+    <a href="about.html">About</a>
+    <a href="privacy.html">Privacy</a>
+  </nav>
+</header>
+
+<div class="page">
+
+  <div class="ad-rail">
+    <!--
+      Google AdSense slot (left). Replace ca-pub-XXXXXXXXXXXXXXXX and
+      data-ad-slot with your own values, then uncomment.
+
+      <ins class="adsbygoogle" style="display:block"
+           data-ad-client="ca-pub-XXXXXXXXXXXXXXXX"
+           data-ad-slot="XXXXXXXXXX"
+           data-ad-format="vertical"
+           data-full-width-responsive="true"></ins>
+      <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+    -->
+    <div class="ad-slot">Ad space<br>160 x 600</div>
+  </div>
+
+  <div class="stage">
+
+    <div class="hero">
+      <h1>EDUPLAY</h1>
+      <p>Free games for practicing school skills, one round at a time.</p>
+    </div>
+
+    <div class="game-grid">
+      <a class="game-card" href="games/times-table-blast/index.html">
+        <span class="emoji">✖️</span>
+        <span class="name">Times Table Blast</span>
+        <span class="desc">Beat the clock and practice multiplication facts.</span>
+      </a>
+
+      <div class="game-card soon">
+        <span class="emoji">➗</span>
+        <span class="name">Division Dash</span>
+        <span class="desc">Quick-fire division practice.</span>
+        <span class="badge-soon">Coming soon</span>
+      </div>
+
+      <div class="game-card soon">
+        <span class="emoji">🔤</span>
+        <span class="name">Spelling Sprint</span>
+        <span class="desc">Type the word before time runs out.</span>
+        <span class="badge-soon">Coming soon</span>
+      </div>
+
+      <div class="game-card soon">
+        <span class="emoji">🌍</span>
+        <span class="name">Flag Frenzy</span>
+        <span class="desc">Match flags to their countries.</span>
+        <span class="badge-soon">Coming soon</span>
+      </div>
+    </div>
+
+    <div class="ad-slot-mobile">Ad space</div>
+
+  </div>
+
+  <div class="ad-rail">
+    <!--
+      Google AdSense slot (right). Same setup as the left rail.
+
+      <ins class="adsbygoogle" style="display:block"
+           data-ad-client="ca-pub-XXXXXXXXXXXXXXXX"
+           data-ad-slot="XXXXXXXXXX"
+           data-ad-format="vertical"
+           data-full-width-responsive="true"></ins>
+      <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+    -->
+    <div class="ad-slot">Ad space<br>160 x 600</div>
+  </div>
+
+</div>
+
+<footer class="site-footer">
+  <p>EduPlay is free to use. <a href="about.html">About</a> · <a href="privacy.html">Privacy policy</a></p>
+</footer>
+
+</body>
+</html>
