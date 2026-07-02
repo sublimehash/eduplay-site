@@ -10,7 +10,7 @@
   var bestStreak = 0;
   var currentAnswer = null;
   var currentKey = null;
-  var timeLimit = 8;
+  var timeLimit = 15;
   var timeLeft = timeLimit;
   var timerInterval = null;
   var locked = false;
@@ -242,12 +242,14 @@
 
   function startTimer(){
     clearInterval(timerInterval);
+    if (practiceMode) return; // safety net: never run a countdown in practice mode
     timeLimit = parseInt(speedSelect.value, 10);
     timeLeft = timeLimit;
     timerBar.style.width = '100%';
 
     var tickMs = 100;
     timerInterval = setInterval(function(){
+      if (practiceMode){ clearInterval(timerInterval); return; }
       timeLeft -= tickMs / 1000;
       var pct = Math.max(0, (timeLeft / timeLimit) * 100);
       timerBar.style.width = pct + '%';
@@ -383,8 +385,12 @@
   tableSelect.addEventListener('change', function(){ if (started) renderQuestion(); });
   speedSelect.addEventListener('change', function(){ if (started) renderQuestion(); });
   practiceToggle.addEventListener('change', function(){
+    practiceMode = practiceToggle.checked;
+    if (practiceMode){
+      clearInterval(timerInterval);
+      timerWrap.classList.add('practice-hidden');
+    }
     if (started){
-      practiceMode = practiceToggle.checked;
       renderQuestion();
     }
   });

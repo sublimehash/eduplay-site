@@ -313,7 +313,8 @@ h1.title{
 }
 
 .keyboard-hint{
-  margin-top: 14px;
+  margin-top: 26px;
+  padding-top: 14px;
   font-size: 0.78rem;
   color: rgba(255,255,255,0.4);
   text-align: center;
