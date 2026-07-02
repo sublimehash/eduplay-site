@@ -1,18 +1,29 @@
 (function(){
 
+  var STORAGE_KEY = 'eduplay_ttb_best';
+  var MUTE_KEY = 'eduplay_ttb_muted';
+
   // ---------- State ----------
   var correct = 0;
   var incorrect = 0;
   var streak = 0;
+  var bestStreak = 0;
   var currentAnswer = null;
+  var currentKey = null;
   var timeLimit = 8;
   var timeLeft = timeLimit;
   var timerInterval = null;
   var locked = false;
   var started = false;
+  var muted = false;
+  var practiceMode = false;
+
+  var missCounts = {};      // key "a-b" -> number of times missed this session
+  var recentKeys = [];      // last few question keys, to avoid immediate repeats
 
   // ---------- DOM refs ----------
   var startScreen = document.getElementById('startScreen');
+  var bestNote = document.getElementById('bestNote');
   var playArea = document.getElementById('playArea');
   var playBtn = document.getElementById('playBtn');
   var questionText = document.getElementById('questionText');
@@ -21,10 +32,56 @@
   var correctCountEl = document.getElementById('correctCount');
   var incorrectCountEl = document.getElementById('incorrectCount');
   var streakCountEl = document.getElementById('streakCount');
+  var bestCountEl = document.getElementById('bestCount');
+  var timerWrap = document.querySelector('.timer-wrap');
   var timerBar = document.getElementById('timerBar');
   var tableSelect = document.getElementById('tableSelect');
   var speedSelect = document.getElementById('speedSelect');
+  var practiceToggle = document.getElementById('practiceToggle');
   var resetBtn = document.getElementById('resetBtn');
+  var muteBtn = document.getElementById('muteBtn');
+
+  // ---------- Best streak persistence ----------
+  function loadBest(){
+    try{
+      var saved = localStorage.getItem(STORAGE_KEY);
+      bestStreak = saved ? parseInt(saved, 10) || 0 : 0;
+    } catch(e){
+      bestStreak = 0;
+    }
+    bestCountEl.textContent = bestStreak;
+    bestNote.textContent = bestStreak > 0 ? ('Your best streak: ' + bestStreak) : '';
+  }
+
+  function saveBestIfNeeded(){
+    if (streak > bestStreak){
+      bestStreak = streak;
+      bestCountEl.textContent = bestStreak;
+      try{ localStorage.setItem(STORAGE_KEY, String(bestStreak)); } catch(e){}
+    }
+  }
+
+  // ---------- Mute persistence ----------
+  function loadMute(){
+    try{
+      muted = localStorage.getItem(MUTE_KEY) === '1';
+    } catch(e){
+      muted = false;
+    }
+    updateMuteBtn();
+  }
+
+  function updateMuteBtn(){
+    muteBtn.textContent = muted ? '🔈' : '🔊';
+    muteBtn.setAttribute('aria-pressed', muted ? 'true' : 'false');
+    muteBtn.setAttribute('aria-label', muted ? 'Unmute sound' : 'Mute sound');
+  }
+
+  function toggleMute(){
+    muted = !muted;
+    try{ localStorage.setItem(MUTE_KEY, muted ? '1' : '0'); } catch(e){}
+    updateMuteBtn();
+  }
 
   // ---------- Sound effects (Web Audio API, no files needed) ----------
   var audioCtx = null;
@@ -39,6 +96,7 @@
   }
 
   function playCorrectSound(){
+    if (muted) return;
     var ctx = getAudioCtx();
     var now = ctx.currentTime;
     var notes = [523.25, 659.25, 784.0, 1046.5]; // C5, E5, G5, C6 - happy major arpeggio
@@ -60,6 +118,7 @@
   }
 
   function playIncorrectSound(){
+    if (muted) return;
     var ctx = getAudioCtx();
     var now = ctx.currentTime;
     var hits = [0, 0.14]; // thud - thud
@@ -85,18 +144,46 @@
     return Math.floor(Math.random() * (max - min + 1)) + min;
   }
 
+  // Builds the pool of candidate [a, b] pairs for the chosen table, then
+  // picks one weighted toward facts missed more often this session, while
+  // skipping whatever question was just asked.
   function pickFactors(){
     var chosenTable = parseInt(tableSelect.value, 10);
-    var a, b;
+    var pool = [];
+
     if (chosenTable === 0){
-      a = randInt(1, 12);
-      b = randInt(1, 12);
+      for (var a = 1; a <= 12; a++){
+        for (var b = 1; b <= 12; b++){
+          pool.push([a, b]);
+        }
+      }
     } else {
-      a = chosenTable;
-      b = randInt(1, 12);
-      if (Math.random() < 0.5){ var t = a; a = b; b = t; }
+      for (var b2 = 1; b2 <= 12; b2++){
+        pool.push([chosenTable, b2]);
+      }
     }
-    return [a, b];
+
+    // weight: 1 + 2x the number of times this fact has been missed
+    var weighted = [];
+    pool.forEach(function(pair){
+      var key = pair[0] + '-' + pair[1];
+      if (recentKeys.indexOf(key) !== -1 && pool.length > recentKeys.length){
+        return; // skip recently asked question if alternatives exist
+      }
+      var weight = 1 + (missCounts[key] || 0) * 2;
+      for (var i = 0; i < weight; i++){
+        weighted.push(pair);
+      }
+    });
+
+    if (weighted.length === 0){
+      weighted = pool; // fallback, shouldn't normally happen
+    }
+
+    var chosen = weighted[randInt(0, weighted.length - 1)];
+    var a3 = chosen[0], b3 = chosen[1];
+    if (chosenTable !== 0 && Math.random() < 0.5){ var t = a3; a3 = b3; b3 = t; }
+    return [a3, b3];
   }
 
   function buildChoices(answer){
@@ -126,20 +213,31 @@
     var factors = pickFactors();
     var a = factors[0], b = factors[1];
     currentAnswer = a * b;
+    currentKey = Math.min(a, b) + '-' + Math.max(a, b);
+
+    recentKeys.push(currentKey);
+    if (recentKeys.length > 3) recentKeys.shift();
 
     questionText.innerHTML = a + ' <span class="op">&times;</span> ' + b;
 
     var choices = buildChoices(currentAnswer);
     answersGrid.innerHTML = '';
-    choices.forEach(function(choice){
+    choices.forEach(function(choice, idx){
       var btn = document.createElement('button');
       btn.className = 'answer-btn';
       btn.textContent = choice;
+      btn.setAttribute('data-index', idx + 1);
       btn.addEventListener('click', function(){ handleAnswer(choice, btn); });
       answersGrid.appendChild(btn);
     });
 
-    startTimer();
+    if (practiceMode){
+      timerWrap.classList.add('practice-hidden');
+      clearInterval(timerInterval);
+    } else {
+      timerWrap.classList.remove('practice-hidden');
+      startTimer();
+    }
   }
 
   function startTimer(){
@@ -165,6 +263,7 @@
     locked = true;
     incorrect++;
     streak = 0;
+    missCounts[currentKey] = (missCounts[currentKey] || 0) + 1;
     updateScores();
     playIncorrectSound();
     feedbackText.textContent = "Time's up! Answer: " + currentAnswer;
@@ -192,6 +291,7 @@
     if (choice === currentAnswer){
       correct++;
       streak++;
+      saveBestIfNeeded();
       playCorrectSound();
       btn.classList.add('correct-flash');
       feedbackText.textContent = pickPraise();
@@ -199,6 +299,7 @@
     } else {
       incorrect++;
       streak = 0;
+      missCounts[currentKey] = (missCounts[currentKey] || 0) + 1;
       playIncorrectSound();
       btn.classList.add('incorrect-flash');
       buttons.forEach(function(b){
@@ -223,6 +324,7 @@
     correctCountEl.textContent = correct;
     incorrectCountEl.textContent = incorrect;
     streakCountEl.textContent = streak;
+    bestCountEl.textContent = bestStreak;
   }
 
   function endGame(){
@@ -232,9 +334,12 @@
     correct = 0;
     incorrect = 0;
     streak = 0;
+    missCounts = {};
+    recentKeys = [];
     updateScores();
     playArea.classList.remove('visible');
     startScreen.style.display = 'flex';
+    bestNote.textContent = bestStreak > 0 ? ('Your best streak: ' + bestStreak) : '';
   }
 
   function startGame(){
@@ -242,16 +347,50 @@
     correct = 0;
     incorrect = 0;
     streak = 0;
+    missCounts = {};
+    recentKeys = [];
+    practiceMode = practiceToggle.checked;
     updateScores();
     startScreen.style.display = 'none';
     playArea.classList.add('visible');
     renderQuestion();
   }
 
+  // ---------- Keyboard support ----------
+  document.addEventListener('keydown', function(e){
+    if (!started){
+      if (e.key === 'Enter' || e.key === ' '){
+        e.preventDefault();
+        startGame();
+      }
+      return;
+    }
+
+    if (locked) return;
+
+    if (['1', '2', '3', '4'].indexOf(e.key) !== -1){
+      var btn = answersGrid.querySelector('[data-index="' + e.key + '"]');
+      if (btn){
+        btn.click();
+      }
+    }
+  });
+
   // ---------- Wire up controls ----------
   playBtn.addEventListener('click', startGame);
   resetBtn.addEventListener('click', endGame);
+  muteBtn.addEventListener('click', toggleMute);
   tableSelect.addEventListener('change', function(){ if (started) renderQuestion(); });
   speedSelect.addEventListener('change', function(){ if (started) renderQuestion(); });
+  practiceToggle.addEventListener('change', function(){
+    if (started){
+      practiceMode = practiceToggle.checked;
+      renderQuestion();
+    }
+  });
+
+  // ---------- Init ----------
+  loadBest();
+  loadMute();
 
 })();

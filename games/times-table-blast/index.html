@@ -4,6 +4,8 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Times Table Blast - EduPlay</title>
+<meta name="description" content="Practice multiplication facts with a fast, score-tracked browser game.">
+<link rel="icon" type="image/svg+xml" href="../../favicon.svg">
 <link rel="stylesheet" href="../../css/global.css">
 <link rel="stylesheet" href="style.css">
 </head>
@@ -37,7 +39,10 @@
 
   <div class="stage">
 
-    <h1 class="title">TIMES TABLE BLAST</h1>
+    <div class="title-row">
+      <h1 class="title">TIMES TABLE BLAST</h1>
+      <button class="mute-btn" id="muteBtn" aria-label="Mute sound" aria-pressed="false">🔊</button>
+    </div>
     <div class="subtitle">Pick the right answer before the bar runs out!</div>
 
     <!-- ===================== SCOREBOARD ===================== -->
@@ -49,6 +54,10 @@
       <div class="score-box streak">
         <div class="score-label">Streak</div>
         <div class="score-value" id="streakCount">0</div>
+      </div>
+      <div class="score-box best">
+        <div class="score-label">Best</div>
+        <div class="score-value" id="bestCount">0</div>
       </div>
       <div class="score-box incorrect">
         <div class="score-label">Wrong</div>
@@ -63,6 +72,7 @@
       <div class="start-screen" id="startScreen">
         <div class="big-emoji">7 &times; 8 = ?</div>
         <p>Race the clock and pick the correct answer to grow your streak.</p>
+        <p class="best-note" id="bestNote"></p>
         <button class="play-btn" id="playBtn">PLAY</button>
       </div>
 
@@ -108,8 +118,14 @@
           <option value="5">Fast</option>
         </select>
       </label>
+      <label class="checkbox-label">
+        <input type="checkbox" id="practiceToggle">
+        No timer
+      </label>
       <button class="reset-btn" id="resetBtn">End game</button>
     </div>
+
+    <div class="keyboard-hint">Tip: press 1-4 to answer, or Enter to play/end.</div>
 
     <!-- Ad slot for narrow screens, shown below the game instead of side rails -->
     <div class="ad-slot-mobile">Ad space</div>
