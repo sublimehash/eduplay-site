@@ -1,7 +1,7 @@
 (function(){
 
-  var STORAGE_KEY = 'eduplay_ttb_best';
-  var MUTE_KEY = 'eduplay_ttb_muted';
+  var STORAGE_KEY = 'eduplay_dd_best';
+  var MUTE_KEY = 'eduplay_dd_muted';
 
   // ---------- State ----------
   var correct = 0;
@@ -18,7 +18,7 @@
   var muted = false;
   var practiceMode = false;
 
-  var missCounts = {};      // key "a-b" -> number of times missed this session
+  var missCounts = {};      // key "divisor-quotient" -> times missed this session
   var recentKeys = [];      // last few question keys, to avoid immediate repeats
 
   // ---------- DOM refs ----------
@@ -144,31 +144,30 @@
     return Math.floor(Math.random() * (max - min + 1)) + min;
   }
 
-  // Builds the pool of candidate [a, b] pairs for the chosen table, then
-  // picks one weighted toward facts missed more often this session, while
-  // skipping whatever question was just asked.
+  // Builds the pool of candidate [divisor, quotient] pairs (always a clean
+  // division, no remainders) for the chosen divisor, weighted toward facts
+  // missed more often this session, skipping whatever was just asked.
   function pickFactors(){
-    var chosenTable = parseInt(tableSelect.value, 10);
+    var chosenDivisor = parseInt(tableSelect.value, 10);
     var pool = [];
 
-    if (chosenTable === 0){
-      for (var a = 1; a <= 12; a++){
-        for (var b = 1; b <= 12; b++){
-          pool.push([a, b]);
+    if (chosenDivisor === 0){
+      for (var d = 2; d <= 12; d++){
+        for (var q = 1; q <= 12; q++){
+          pool.push([d, q]);
         }
       }
     } else {
-      for (var b2 = 1; b2 <= 12; b2++){
-        pool.push([chosenTable, b2]);
+      for (var q2 = 1; q2 <= 12; q2++){
+        pool.push([chosenDivisor, q2]);
       }
     }
 
-    // weight: 1 + 2x the number of times this fact has been missed
     var weighted = [];
     pool.forEach(function(pair){
       var key = pair[0] + '-' + pair[1];
       if (recentKeys.indexOf(key) !== -1 && pool.length > recentKeys.length){
-        return; // skip recently asked question if alternatives exist
+        return;
       }
       var weight = 1 + (missCounts[key] || 0) * 2;
       for (var i = 0; i < weight; i++){
@@ -177,26 +176,22 @@
     });
 
     if (weighted.length === 0){
-      weighted = pool; // fallback, shouldn't normally happen
+      weighted = pool;
     }
 
-    var chosen = weighted[randInt(0, weighted.length - 1)];
-    var a3 = chosen[0], b3 = chosen[1];
-    if (chosenTable !== 0 && Math.random() < 0.5){ var t = a3; a3 = b3; b3 = t; }
-    return [a3, b3];
+    return weighted[randInt(0, weighted.length - 1)];
   }
 
   function buildChoices(answer){
     var choices = [answer];
     while (choices.length < 4){
-      var offset = randInt(-10, 10);
+      var offset = randInt(-6, 6);
       var candidate = answer + offset;
-      if (candidate < 0) candidate = answer + Math.abs(offset) + 1;
+      if (candidate < 1) candidate = answer + Math.abs(offset) + 1;
       if (candidate !== answer && choices.indexOf(candidate) === -1){
         choices.push(candidate);
       }
     }
-    // shuffle
     for (var i = choices.length - 1; i > 0; i--){
       var j = Math.floor(Math.random() * (i + 1));
       var tmp = choices[i]; choices[i] = choices[j]; choices[j] = tmp;
@@ -211,14 +206,15 @@
     feedbackText.className = 'feedback';
 
     var factors = pickFactors();
-    var a = factors[0], b = factors[1];
-    currentAnswer = a * b;
-    currentKey = Math.min(a, b) + '-' + Math.max(a, b);
+    var divisor = factors[0], quotient = factors[1];
+    var dividend = divisor * quotient;
+    currentAnswer = quotient;
+    currentKey = divisor + '-' + quotient;
 
     recentKeys.push(currentKey);
     if (recentKeys.length > 3) recentKeys.shift();
 
-    questionText.innerHTML = a + ' <span class="op">&times;</span> ' + b;
+    questionText.innerHTML = dividend + ' <span class="op">&divide;</span> ' + divisor;
 
     var choices = buildChoices(currentAnswer);
     answersGrid.innerHTML = '';

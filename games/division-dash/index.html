@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Times Table Blast - EduPlay</title>
-<meta name="description" content="Practice multiplication facts with a fast, score-tracked browser game.">
+<title>Division Dash - EduPlay</title>
+<meta name="description" content="Practice division facts with a fast, score-tracked browser game.">
 <link rel="icon" type="image/svg+xml" href="../../favicon.svg">
 <link rel="stylesheet" href="../../css/global.css">
 <link rel="stylesheet" href="style.css">
@@ -40,7 +40,7 @@
   <div class="stage">
 
     <div class="title-row">
-      <h1 class="title">TIMES TABLE BLAST</h1>
+      <h1 class="title">DIVISION DASH</h1>
       <button class="mute-btn" id="muteBtn" aria-label="Mute sound" aria-pressed="false">🔊</button>
     </div>
     <div class="subtitle">Pick the right answer before the bar runs out!</div>
@@ -70,7 +70,7 @@
 
       <!-- Start screen shown before the game begins -->
       <div class="start-screen" id="startScreen">
-        <div class="big-emoji">7 &times; 8 = ?</div>
+        <div class="big-emoji">42 &divide; 6 = ?</div>
         <p>Race the clock and pick the correct answer to grow your streak.</p>
         <p class="best-note" id="bestNote"></p>
         <button class="play-btn" id="playBtn">PLAY</button>
@@ -82,7 +82,7 @@
           <div class="timer-bar" id="timerBar"></div>
         </div>
 
-        <div class="question" id="questionText">? &times; ?</div>
+        <div class="question" id="questionText">? &divide; ?</div>
 
         <div class="answers" id="answersGrid"></div>
 
@@ -94,9 +94,9 @@
     <!-- ===================== SETTINGS ===================== -->
     <div class="settings">
       <label>
-        Table
+        Divide by
         <select id="tableSelect">
-          <option value="0">Mixed 1-12</option>
+          <option value="0">Mixed 2-12</option>
           <option value="2">2s</option>
           <option value="3">3s</option>
           <option value="4">4s</option>

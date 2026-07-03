@@ -32,8 +32,8 @@ a{ color: var(--cyan); }
   justify-content: space-between;
   flex-wrap: wrap;
   gap: 12px;
-  padding: 10px 24px;
-  max-width: 1200px;
+  padding: 10px 40px;
+  max-width: 1600px;
   margin: 0 auto;
 }
 
@@ -69,8 +69,8 @@ a{ color: var(--cyan); }
 /* ---------- Footer ---------- */
 .site-footer{
   max-width: 1000px;
-  margin: 14px auto 0;
-  padding: 10px 24px 14px;
+  margin: 24px auto 0;
+  padding: 14px 24px 24px;
   text-align: center;
   color: rgba(255,255,255,0.45);
   font-size: 0.85rem;
@@ -81,19 +81,38 @@ a{ color: var(--cyan); }
 }
 
 /* ---------- Ad rails (reused by any page) ---------- */
+/* 3-column grid: ad rails pin to the outer edges of the page, the stage
+   stays fixed-width and centered in the middle column regardless of
+   whether ad rails are present on a given page. */
 .page{
-  display: flex;
-  justify-content: center;
-  align-items: flex-start;
-  gap: 48px;
-  padding: 0 12px 16px;
+  display: grid;
+  grid-template-columns: 1fr minmax(0, 560px) 1fr;
+  align-items: start;
+  gap: 18px;
+  max-width: 1600px;
+  margin: 0 auto;
+  padding: 0 32px 30px;
+}
+
+.stage{
+  grid-column: 2;
 }
 
 .ad-rail{
-  flex: 0 0 160px;
+  width: 160px;
   position: sticky;
   top: 20px;
   display: none;
+}
+
+.ad-rail:first-of-type{
+  grid-column: 1;
+  justify-self: start;
+}
+
+.ad-rail:last-of-type{
+  grid-column: 3;
+  justify-self: end;
 }
 
 @media (min-width: 1100px){
@@ -120,8 +139,8 @@ a{ color: var(--cyan); }
 .ad-slot-mobile{
   width: 100%;
   max-width: 520px;
-  min-height: 90px;
-  margin: 14px auto 0;
+  min-height: 100px;
+  margin: 24px auto 0;
   border: 2px dashed rgba(255,255,255,0.25);
   border-radius: 12px;
   background: rgba(255,255,255,0.03);
