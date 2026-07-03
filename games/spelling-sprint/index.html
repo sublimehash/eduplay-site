@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Spelling Sprint - EduPlay</title>
+<meta name="description" content="Spot the correctly spelled word before time runs out.">
+<link rel="icon" type="image/svg+xml" href="../../favicon.svg">
+<link rel="stylesheet" href="../../css/global.css">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header class="site-header">
+  <a href="../../index.html" class="logo">EduPlay</a>
+  <nav class="site-nav">
+    <a href="../../index.html">Home</a>
+    <a href="../../about.html">About</a>
+    <a href="../../privacy.html">Privacy</a>
+  </nav>
+</header>
+
+<div class="page">
+
+  <div class="ad-rail">
+    <!--
+      Google AdSense slot (left). Replace ca-pub-XXXXXXXXXXXXXXXX and
+      data-ad-slot with your own values, then uncomment.
+
+      <ins class="adsbygoogle" style="display:block"
+           data-ad-client="ca-pub-XXXXXXXXXXXXXXXX"
+           data-ad-slot="XXXXXXXXXX"
+           data-ad-format="vertical"
+           data-full-width-responsive="true"></ins>
+      <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+    -->
+    <div class="ad-slot">Ad space<br>160 x 600</div>
+  </div>
+
+  <div class="stage">
+
+    <div class="title-row">
+      <h1 class="title">SPELLING SPRINT</h1>
+      <button class="mute-btn" id="muteBtn" aria-label="Mute sound" aria-pressed="false">🔊</button>
+    </div>
+    <div class="subtitle">Pick the correctly spelled word before the bar runs out!</div>
+
+    <!-- ===================== SCOREBOARD ===================== -->
+    <div class="scoreboard">
+      <div class="score-box correct">
+        <div class="score-label">Correct</div>
+        <div class="score-value" id="correctCount">0</div>
+      </div>
+      <div class="score-box streak">
+        <div class="score-label">Streak</div>
+        <div class="score-value" id="streakCount">0</div>
+      </div>
+      <div class="score-box best">
+        <div class="score-label">Best</div>
+        <div class="score-value" id="bestCount">0</div>
+      </div>
+      <div class="score-box incorrect">
+        <div class="score-label">Wrong</div>
+        <div class="score-value" id="incorrectCount">0</div>
+      </div>
+    </div>
+
+    <!-- ===================== GAME CARD ===================== -->
+    <div class="game-card">
+
+      <!-- Start screen shown before the game begins -->
+      <div class="start-screen" id="startScreen">
+        <div class="big-emoji" style="font-size: clamp(1.6rem, 6vw, 2.2rem);">Which is spelled correctly?</div>
+        <p>Race the clock and pick the correct spelling to grow your streak.</p>
+        <p class="best-note" id="bestNote"></p>
+        <button class="play-btn" id="playBtn">PLAY</button>
+      </div>
+
+      <!-- Play area, hidden until PLAY is pressed -->
+      <div class="play-area" id="playArea">
+        <div class="timer-wrap">
+          <div class="timer-bar" id="timerBar"></div>
+        </div>
+
+        <div class="question" id="questionText">Which is spelled correctly?</div>
+
+        <div class="answers" id="answersGrid"></div>
+
+        <div class="feedback" id="feedbackText"></div>
+      </div>
+
+    </div>
+
+    <!-- ===================== SETTINGS ===================== -->
+    <div class="settings">
+      <label>
+        Level
+        <select id="tableSelect">
+          <option value="0">Mixed</option>
+          <option value="easy">Easy</option>
+          <option value="medium">Medium</option>
+          <option value="hard">Hard</option>
+        </select>
+      </label>
+      <label>
+        Speed
+        <select id="speedSelect">
+          <option value="12">Relaxed</option>
+          <option value="8" selected>Normal</option>
+          <option value="5">Fast</option>
+        </select>
+      </label>
+      <label class="checkbox-label">
+        <input type="checkbox" id="practiceToggle">
+        No timer
+      </label>
+      <button class="reset-btn" id="resetBtn">End game</button>
+    </div>
+
+    <div class="keyboard-hint">Tip: press 1-4 to answer, or Enter to play/end.</div>
+
+    <!-- Ad slot for narrow screens, shown below the game instead of side rails -->
+    <div class="ad-slot-mobile">Ad space</div>
+
+  </div>
+
+  <div class="ad-rail">
+    <!--
+      Google AdSense slot (right). Same setup as the left rail above.
+
+      <ins class="adsbygoogle" style="display:block"
+           data-ad-client="ca-pub-XXXXXXXXXXXXXXXX"
+           data-ad-slot="XXXXXXXXXX"
+           data-ad-format="vertical"
+           data-full-width-responsive="true"></ins>
+      <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+    -->
+    <div class="ad-slot">Ad space<br>160 x 600</div>
+  </div>
+
+</div>
+
+<footer class="site-footer">
+  <p>EduPlay is free to use. <a href="../../about.html">About</a> · <a href="../../privacy.html">Privacy policy</a></p>
+</footer>
+
+<script src="script.js"></script>
+</body>
+</html>
