@@ -2,7 +2,7 @@
 
   var STORAGE_KEY = 'eduplay_spell_best';
   var MUTE_KEY = 'eduplay_spell_muted';
-  var REPLAY_MISS_PROBABILITY = 0.4;
+  var REPLAY_MISS_PROBABILITY = 0.2;
 
   // ---------- Word bank: [correct, wrong1, wrong2, wrong3] ----------
   var WORDS = {
@@ -290,7 +290,9 @@
     var attempts = 0;
 
     if (missKeysList.length > 0 && Math.random() < REPLAY_MISS_PROBABILITY){
-      var key = missKeysList[randInt(0, missKeysList.length - 1)];
+      var candidates = missKeysList.filter(function(k){ return recentKeys.indexOf(k) === -1; });
+      var missPool = candidates.length > 0 ? candidates : missKeysList;
+      var key = missPool[randInt(0, missPool.length - 1)];
       entry = pool.filter(function(e){ return e[0] === key; })[0];
       if (!entry) entry = pool[randInt(0, pool.length - 1)];
     } else {
@@ -373,6 +375,16 @@
     }
   }
 
+  // Once a previously-missed item is answered correctly again, stop
+  // over-weighting it in the replay pool so it doesn't keep resurfacing.
+  function clearMiss(key){
+    var idx = missKeysList.indexOf(key);
+    if (idx !== -1){
+      missKeysList.splice(idx, 1);
+    }
+    delete missCounts[key];
+  }
+
   function handleTimeout(){
     if (locked) return;
     locked = true;
@@ -406,6 +418,7 @@
     if (choice === currentAnswer){
       correct++;
       streak++;
+      clearMiss(currentKey);
       saveBestIfNeeded();
       playCorrectSound();
       btn.classList.add('correct-flash');

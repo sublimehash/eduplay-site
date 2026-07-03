@@ -44,7 +44,10 @@
     padding: 14px 10px;
     text-align: center;
     text-decoration: none;
-    display: block;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-height: 172px;
     box-shadow: 0 4px 0 rgba(0,0,0,0.3);
     transition: transform 0.08s ease;
   }
@@ -67,15 +70,27 @@
     font-family: 'Baloo 2', cursive;
     font-weight: 800;
     font-size: 0.95rem;
+    line-height: 1.2;
     color: var(--white);
-    display: block;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    align-items: center;
+    justify-content: center;
+    min-height: 2.4em;
     margin-bottom: 2px;
   }
 
   .game-card .desc{
     font-size: 0.72rem;
+    line-height: 1.35;
     color: rgba(255,255,255,0.7);
-    display: block;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    min-height: 2.7em;
   }
 
   .game-card.soon{
@@ -153,7 +168,7 @@
       <a class="game-card" href="games/times-table-blast/index.html">
         <span class="emoji">✖️</span>
         <span class="name">Times Table Blast</span>
-        <span class="desc">Beat the clock and practice multiplication facts.</span>
+        <span class="desc">Fast-paced multiplication practice.</span>
       </a>
 
       <a class="game-card" href="games/division-dash/index.html">
